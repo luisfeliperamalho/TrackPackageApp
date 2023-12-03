@@ -4,5 +4,6 @@ class AppStrings {
       "Digite aqui o codigo de rastreio...";
   static const String rastreamento_de_encomendas = "Rastreamento de Encomendas";
   static const String voltar = "Voltar";
-
+  static const String suas_encomendas = "Suas Encomendas";
+  static const String objeto_nao_encontrado = "Objeto não encontrado.";
 }

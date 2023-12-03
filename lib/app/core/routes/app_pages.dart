@@ -14,7 +14,7 @@ class AppPages {
     ),
     GetPage(
       name: AppRoutes.detail,
-      page: () => const DetailPackagePage(),
+      page: () => DetailPackagePage(),
     ),
   ];
 }

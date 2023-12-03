@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -8,16 +7,20 @@ import 'package:track_package_app/app/data/models/package_model.dart';
 import 'package:track_package_app/app/data/repositories/search_package_repository_impl.dart';
 import 'package:track_package_app/app/domain/states/search_package_state.dart';
 import 'package:track_package_app/app/features/search_package/view/detail_package.dart';
-
+import 'package:track_package_app/app/features/search_package/view/loading.dart';
 import '../../../domain/repositories/search_package_repository.dart';
+import '../../widgets/dialog_widget.dart';
 
 class SearchPackageController extends GetxController {
   static SearchPackageController get to => Get.find();
   final codePackage = TextEditingController();
   final formKey = GlobalKey<FormState>();
+  late BuildContext context;
+  late Loading loading = Loading(context);
   RxList<Package> packages = <Package>[].obs;
 
   void search() async {
+    loading.show();
     if (formKey.currentState!.validate()) {
       final SearchPackageRepository search =
           SearchPackageRepositoryImpl(datasource: SearchPackageDatasource());
@@ -26,12 +29,21 @@ class SearchPackageController extends GetxController {
           await search.getDetailsPackage(codePackage.text);
 
       if (state is SuccessState) {
+        loading.hide();
+
         codePackage.clear();
 
         save(state.package);
         Get.to(DetailPackagePage(
           package: state.package,
         ));
+      } else if (state is ErrorState) {
+        loading.hide();
+        Get.dialog(
+          const CustomDialogWidget(
+            title: "Objeto não encontado!",
+          ),
+        );
       }
     }
   }
